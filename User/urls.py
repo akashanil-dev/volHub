@@ -50,5 +50,8 @@ urlpatterns = [
     path('edit-profile/<int:page>/', views.edit_profile, name='edit_profile'),
     path('update-profile-photo/', views.update_profile_photo, name='update_profile_photo'),
 
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

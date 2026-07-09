@@ -55,10 +55,19 @@ python manage.py makemigrations
 python manage.py migrate
 ```
 
-5. Load initial location data:
-```bash
-python manage.py loaddata fixtures/initial_location_data.json
-```
+5. Load initial location data (required for country/state/city dropdowns):
+
+   The `fixtures/initial_location_data.json` file contains seed data for the
+   `Admin.tbl_country`, `Admin.tbl_state`, and `Admin.tbl_city` tables. This
+   data powers the cascading AJAX dropdowns on the registration and profile
+   forms. **This step must be run after `migrate` or the dropdowns will be empty.**
+
+   ```bash
+   python manage.py loaddata fixtures/initial_location_data.json
+   ```
+
+   > **Note:** The fixture is ~6 MB and contains worldwide country, state, and
+   > city records. Loading it may take a moment.
 
 6. Run the development server:
 ```bash

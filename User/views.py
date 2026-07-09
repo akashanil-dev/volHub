@@ -5,9 +5,7 @@ from User.models import *
 from Admin.models import *
 import json
 from django.http import JsonResponse
-from .models import tbl_skill, tbl_user, tbl_request, tbl_event, tbl_country, tbl_state, tbl_user, tbl_city
 from django.db.models import Q
-from django.utils import timezone
 from django.contrib import messages
 from django.http import HttpResponseBadRequest
 from django.core.mail import send_mail
@@ -36,10 +34,14 @@ def logout(request):
     return redirect("Guest:index")
 
 def myProfile(request):
+    if 'u_id' not in request.session:
+        return redirect('Guest:login')
     thisProfile=tbl_user.objects.get(id=request.session['u_id'])
     return render(request,'User/myProfile.html', {'thisProfile':thisProfile})
 
 def editProfile(request):
+    if 'u_id' not in request.session:
+        return redirect('Guest:login')
     editProfile=tbl_user.objects.get(id=request.session['u_id'])
     if request.method=="POST":
         editProfile.user_name=request.POST.get('txt_name')
@@ -52,6 +54,8 @@ def editProfile(request):
         return render(request, 'User/editProfile.html', {'editProfile':editProfile})
 
 def changePassword(request):
+    if 'u_id' not in request.session:
+        return redirect('Guest:login')
     loggedUser=tbl_user.objects.get(id=request.session['u_id'])
     if request.method=="POST":
         oldPassword=request.POST.get('txt_old_password')
@@ -69,7 +73,9 @@ def changePassword(request):
 
 # Feedback
 def Feedback(request):
-    fb=tbl_feedback.objects.all()
+    if 'u_id' not in request.session:
+        return redirect('Guest:login')
+    fb=tbl_feedback.objects.filter(user_id=request.session['u_id'])
     if request.method=="POST":
         content=request.POST.get("txt_feedback")
         tbl_feedback.objects.create(feedback_content=content,user_id=tbl_user.objects.get(id=request.session['u_id']))
@@ -83,7 +89,9 @@ def deleteFeedback(request,did):
 
 # Complaint
 def Complaint(request):
-    cp=tbl_complaint.objects.all()
+    if 'u_id' not in request.session:
+        return redirect('Guest:login')
+    cp=tbl_complaint.objects.filter(user_id=request.session['u_id'])
     if request.method=="POST":
         complaintTitle=request.POST.get("txt_complaint_title")
         complaintContent=request.POST.get("txt_complaint_content")
@@ -108,6 +116,8 @@ def editComplaint(request,eid):
 
 # Basic Profile Creation
 def create_profile(request):
+    if 'u_id' not in request.session:
+        return redirect('Guest:login')
     country = tbl_country.objects.all()
     state = tbl_state.objects.all()
     thisUser = tbl_user.objects.get(id=request.session['u_id'])
@@ -165,11 +175,12 @@ def create_profile(request):
                 'country': country, 'state': state, 'thisUser': thisUser
             })
 
-        return redirect({
+        redirect_url = {
             'volunteer': 'User:volunteer_dashboard',
             'organizer': 'User:organizer_dashboard',
             'both': 'User:volunteer_dashboard'
-        }.get(thisUser.user_type, 'User:user_who'))
+        }.get(thisUser.user_type, 'Guest:user_who')
+        return redirect(redirect_url)
 
     return render(request, 'User/create_profile.html', {
         'country': country, 'state': state, 'thisUser': thisUser
@@ -185,6 +196,8 @@ def profile_state_ajax(request):
     return render(request,'User/profile_state_ajax.html', {"city":city})
 
 def Event(request):
+    if 'u_id' not in request.session:
+        return redirect('Guest:login')
     country = tbl_country.objects.all()
     industry = tbl_industry.objects.all()
     skills = tbl_skill.objects.all()  # For multi-select of required skills
