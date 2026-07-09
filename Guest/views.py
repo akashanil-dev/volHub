@@ -67,8 +67,8 @@ def user_who(request):
     return render(request, 'Guest/user_type.html', {"message": "Please select a type"})
 
 def ajax_place(request):
-    place = tbl_place.objects.filter(district=request.GET.get("did"))
-    return render(request, 'Guest/ajax_place.html', {"place": place})
+    # tbl_place model does not exist; return empty response as stub
+    return render(request, 'Guest/ajax_place.html', {"place": []})
 
 def login(request):
     if request.method == "POST":
@@ -126,7 +126,10 @@ def public_profile(request, name):
 def forgotpassword(request):
     if request.method == "POST":
         email = request.POST.get("txt_email")
-        user = tbl_user.objects.get(user_email=email)
+        try:
+            user = tbl_user.objects.get(user_email=email)
+        except tbl_user.DoesNotExist:
+            return render(request, "Guest/ForgotPassword.html", {"error": "No account found with that email address."})
         otp = random.randint(111111,999999)
         request.session["otp"] = otp
         request.session["fid"] = user.id

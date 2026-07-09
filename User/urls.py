@@ -38,7 +38,6 @@ urlpatterns = [
 
     # Volunteer request action
     path('event-detail/<int:event_id>/', views.event_detail, name='event_detail'),
-    path('profile/edit/<int:page>/', views.edit_profile, name='edit_profile'),
     path('ajax/skill-search/', views.skill_search_ajax, name='skill_search_ajax'),
     path('organizer/<int:event_id>/', views.organizer_profile, name='organizer_profile'),
 

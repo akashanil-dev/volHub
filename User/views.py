@@ -14,12 +14,12 @@ from django.core.mail import send_mail
 from django.conf import settings
 import magic
 from django.core.exceptions import ObjectDoesNotExist
-from django.contrib.auth.decorators import login_required
 from datetime import datetime
 
 # Update profile photo via AJAX
-@login_required
 def update_profile_photo(request):
+    if 'u_id' not in request.session:
+        return JsonResponse({'status': 'error', 'message': 'Not authenticated'})
     if request.method == 'POST' and request.FILES.get('user_photo'):
         try:
             user = tbl_user.objects.get(id=request.session['u_id'])
@@ -30,62 +30,7 @@ def update_profile_photo(request):
             return JsonResponse({'status': 'error'})
     return JsonResponse({'status': 'error'})
 
-# Multi-step profile edit view with autosave
-@login_required
-def edit_profile(request, page=1):
-    if 'u_id' not in request.session:
-        return redirect('Guest:login')
-    user = tbl_user.objects.get(id=request.session['u_id'])
-    user_type = user.user_type
-    user_city = tbl_city
 
-    # Months and years for dropdowns
-    months = [
-        'January', 'February', 'March', 'April', 'May', 'June',
-        'July', 'August', 'September', 'October', 'November', 'December'
-    ]
-    current_year = datetime.now().year
-    years = list(range(current_year - 50, current_year + 10))
-
-    # Handle autosave AJAX
-    if request.method == 'POST' and request.POST.get('autosave') == 'true':
-        field = request.POST.get('field')
-        value = request.POST.get('value')
-        if field and hasattr(user, field):
-            if field == 'user_city':
-                try:
-                    city = tbl_city.objects.get(id=value)
-                    setattr(user, field, city)
-                except Exception:
-                    pass
-            else:
-                setattr(user, field, value)
-            user.save()
-            return JsonResponse({'status': 'success'})
-        return JsonResponse({'status': 'error'})
-
-    # Handle regular form submission (Next/Previous)
-    if request.method == 'POST':
-        if 'previous' in request.POST and page > 1:
-            return redirect('User:edit_profile', page - 1)
-        if 'next' in request.POST and page < 5:
-            if page == 1:
-                user.is_basic_profile_complete = True
-            user.save()
-            return redirect('User:edit_profile', page + 1)
-
-    context = {
-        'user': user,
-        'user_type': user_type,
-        'user_city': user_city,
-        'page': page,
-        'months': months,
-        'years': years,
-        'request': request, # Pass request to template for session access
-    }
-    return render(request, 'User/edit_profile.html', context)
-
-# Create your views here.
 def logout(request):
     request.session.flush()  # This deletes all session data for the user
     return redirect("Guest:index")
@@ -430,8 +375,8 @@ def edit_event(request, event_id):
         event.event_content = request.POST.get('txt_description')
         event.event_venue = request.POST.get('txt_venue')
         event.event_stipend = request.POST.get('txt_stipend')
-        event.event_slots = request.POST.get('txt_slots')
-        event.event_deadline = request.POST.get('txt_deadline')
+        event.volunteer_slots = request.POST.get('txt_slots')
+        event.application_deadline = request.POST.get('txt_deadline')
         event.event_datetime = request.POST.get('txt_datetime')
 
         # Foreign keys
@@ -485,7 +430,7 @@ def switch_dashboard(request):
         if not (is_basic_complete and is_org_complete):
             if not is_basic_complete:
                 messages.error(request, 'You must complete your basic profile before switching to the organizer dashboard.')
-                return redirect('User:edit_profile')
+                return redirect('User:edit_profile', page=1)
             if not is_org_complete:
                 messages.error(request, 'You must complete your organizer profile before switching to the organizer dashboard.')
                 return redirect('User:create_organizer_profile')
@@ -494,7 +439,7 @@ def switch_dashboard(request):
         if not (is_basic_complete and is_vol_complete):
             if not is_basic_complete:
                 messages.error(request, 'You must complete your basic profile before switching to the volunteer dashboard.')
-                return redirect('User:edit_profile')
+                return redirect('User:edit_profile', page=1)
             if not is_vol_complete:
                 messages.error(request, 'You must complete your volunteer profile before switching to the volunteer dashboard.')
                 return redirect('User:create_vol_profile')
@@ -667,8 +612,8 @@ def event_action(request, event_id):
                 f"Thank you so much for your interest in volunteering with us for {event.event_title}. "
                 "We truly appreciate the time and effort you took to apply.\n\n"
                 "After careful consideration, we regret to inform you that we are unable to include you "
-                "in this event’s volunteer team.\n\n"
-                "We hope you’ll stay connected with us and consider applying for future opportunities.\n\n"
+                "in this event's volunteer team.\n\n"
+                "We hope you'll stay connected with us and consider applying for future opportunities.\n\n"
                 "Warm regards,\n"
                 "The Team"
             ),
@@ -676,7 +621,7 @@ def event_action(request, event_id):
             recipient_list=[email],
         )
 
-            message = f"Request from {req.user.user_email} rejected successfully!"
+                message = f"Request from {req.user.user_email} rejected successfully!"
             req.save()
             messages.success(request, message)
             return redirect('User:event_action', event_id=event_id)

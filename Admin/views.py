@@ -18,7 +18,7 @@ def feedback_list(request):
 
 # Logout
 def logout(request):
-    del request.session["a_id"]
+    request.session.pop("a_id", None)
     return redirect("Guest:login")
 
 # Admin Section
@@ -38,13 +38,12 @@ def editAdmin(request,eid):
     adm=tbl_admin.objects.get(id=eid)
     if request.method=="POST":
         adm.admin_name=request.POST.get('txt_name')
-        adm.admin_contact=request.POST.get('txt_contact')
         adm.admin_email=request.POST.get('txt_email')
         adm.admin_password=request.POST.get('txt_password')
         adm.save()
         return redirect('Admin:adminRegistration')
     else:
-        return render(request,'Admin/adminRegistration.html',{"editadmin":editadmin})
+        return render(request,'Admin/adminRegistration.html',{"editadmin":adm})
 
 # Compliant Inbox
 def complaintInbox(request):
@@ -126,7 +125,7 @@ def deleteIndustry(request, iid):
 # Country, State, City Insertion Page
 def country_state_city(request):
     if 'a_id' not in request.session:  # Matches your login view's session key
-        return redirect('Admin:login')
+        return redirect('Guest:login')
     
     countries = tbl_country.objects.all()
     return render(request, 'Admin/country_state_city.html', {'countries': countries})
@@ -200,7 +199,7 @@ def add_city(request):
 
 def adminDashboard(request):
     if 'a_id' not in request.session:  # Matches your login view
-        return redirect('Admin:login')
+        return redirect('Guest:login')
     
     # Fetch all events (no user_type filter)
     all_events = tbl_event.objects.all().select_related('user', 'industry', 'event_city')
