@@ -5,12 +5,12 @@
 {% block extra_head %}
 <style>
     .public-event-hero {
-        background: linear-gradient(90deg, #6366f1 0%, #818cf8 100%);
+        background: linear-gradient(90deg, #0d9488 0%, #14b8a6 100%);
         color: #fff;
         padding: 38px 0 26px 0;
         text-align: center;
         border-radius: 0 0 28px 28px;
-        box-shadow: 0 4px 24px rgba(79,70,229,0.08);
+        box-shadow: 0 4px 24px rgba(13,148,136,0.08);
         margin-bottom: 0;
     }
     .public-event-title {
@@ -60,7 +60,7 @@
         margin-top: 30px;
     }
     .public-event-btn {
-        background: linear-gradient(90deg, #6366f1 0%, #818cf8 100%);
+        background: linear-gradient(90deg, #0d9488 0%, #14b8a6 100%);
         color: #fff;
         font-weight: 600;
         border: none;
@@ -68,17 +68,17 @@
         border-radius: 8px;
         font-size: 1.13rem;
         cursor: pointer;
-        box-shadow: 0 2px 8px rgba(79,70,229,0.09);
+        box-shadow: 0 2px 8px rgba(13,148,136,0.09);
         transition: background 0.16s, color 0.16s;
         text-decoration: none;
     }
     .public-event-btn:hover {
-        background: #6366f1;
+        background: #0f766e;
         color: #fff;
     }
     .public-event-signup-hint {
         margin-top: 12px;
-        color: #6366f1;
+        color: #0d9488;
         font-size: 1.07rem;
         text-align: center;
     }
@@ -114,7 +114,7 @@
     </div>
     {% if not request.session.u_id %}
         <div class="public-event-signup-hint">
-            Already have an account? <a href="{% url 'Guest:login' %}" style="color:#6366f1;text-decoration:underline;">Log in here</a> to apply.
+            Already have an account? <a href="{% url 'Guest:login' %}" style="color:#0d9488;text-decoration:underline;">Log in here</a> to apply.
         </div>
     {% endif %}
 </div>
