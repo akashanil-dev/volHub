@@ -223,7 +223,7 @@ def adminDashboard(request):
                 f"After careful consideration, we are pleased to inform you that your event \"{event_name}\" has been approved by our team.\n"
                 "We appreciate your initiative and effort in organizing this event.\n\n"
                 "Best wishes for your event's success.\n\n"
-                "Warm regards,\nThe VolHub Admin Team"
+                "Warm regards,\nThe Kinship Admin Team"
             )
             send_mail(subject, body, settings.EMAIL_HOST_USER, [event.user.user_email])
             message = f"Event '{event.event_title}' accepted successfully!"
@@ -244,7 +244,7 @@ def adminDashboard(request):
                 f"After careful consideration, we regret to inform you that your event \"{event_name}\" has not been approved at this time.\n"
                 "We appreciate your effort and encourage you to continue submitting valuable proposals in the future.\n\n"
                 "Thank you for your understanding.\n\n"
-                "Warm regards,\nThe VolHub Admin Team"
+                "Warm regards,\nThe Kinship Admin Team"
             )
             send_mail(subject, body, settings.EMAIL_HOST_USER, [organizer_email])
             message = f"Event '{event.event_title}' rejected successfully!"

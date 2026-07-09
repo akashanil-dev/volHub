@@ -1,6 +1,6 @@
-# VolHub
+# Kinship
 
-VolHub is a Django-based web application that serves as a platform for managing volunteer activities and user interactions. The project is built using Django 5.1.5 and follows a multi-app architecture with separate modules for Admin, Guest, and User functionalities.
+Kinship is a Django-based web application that serves as a platform for managing volunteer activities and user interactions. The project is built using Django 5.1.5 and follows a multi-app architecture with separate modules for Admin, Guest, and User functionalities.
 
 ## Features
 
@@ -13,7 +13,7 @@ VolHub is a Django-based web application that serves as a platform for managing 
 ## Project Structure
 
 ```
-volHub/
+Kinship/
 ├── Admin/          # Admin-specific functionality
 ├── Guest/          # Guest user features
 ├── User/           # Registered user features
@@ -34,8 +34,8 @@ volHub/
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/ecoholic84/volHub.git
-cd volHub
+git clone https://github.com/ecoholic84/Kinship.git
+cd Kinship
 ```
 
 2. Create and activate a virtual environment:

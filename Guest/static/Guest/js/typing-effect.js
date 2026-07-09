@@ -1,4 +1,4 @@
-// Typing effect for Volhub landing page (vanilla JS)
+// Typing effect for Kinship landing page (vanilla JS)
 // Usage: typingEffect(targetElement, ["word1", "word2", ...])
 function typingEffect(element, words, typeSpeed = 110, pauseEnd = 1500, pauseStart = 20) {
     let textIndex = 0;
@@ -40,4 +40,4 @@ function typingEffect(element, words, typeSpeed = 110, pauseEnd = 1500, pauseSta
 }
 
 // To use: after DOM loaded
-// typingEffect(document.getElementById('volhub-typing'), ["made alone", "possible without unity", "done without teamwork"]);
+// typingEffect(document.getElementById('Kinship-typing'), ["made alone", "possible without unity", "done without teamwork"]);
